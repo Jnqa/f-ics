@@ -1,20 +1,22 @@
-FROM fastlanetools/fastlane:latest
-#ENV NODE_ENV production
-# Install npm requirements
-# throw errors if Gemfile has been modified since Gemfile.lock
-#ADD requirements.txt .
-#RUN sudo apt-get update
-RUN apt install npm
-# RUN gem install fastlane -NV
-RUN npm install @slack/client@3.16.0 --save
-#RUN npm install dirty --save
-#RUN npm install moment --save
-#RUN bash -r requirements.txt
+FROM ruby:2.5
 
-#RUN yarn add ruby
-#RUN yarn install -r requirements.txt
+# install fastlane
+RUN gem install fastlane
+
+# install node.js
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get install -y nodejs
+
+# install yarn
+# RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+# RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+# RUN apt-get update && apt-get install yarn
+
+############################################
+
 WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
+COPY package.json package-lock.json ./
+RUN npm install
 #RUN npm install --production --silent && mv node_modules ../
 COPY . .
 EXPOSE 3047
