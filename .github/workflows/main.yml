@@ -1,0 +1,14 @@
+name: F-ICS
+
+on: push
+
+jobs:
+  job1:
+    name: Build after push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Actions/v2
+      uses: actions/checkout@v2
+    - name: docker-magic
+      run: docker build -t jnqa/f-ics .
+
