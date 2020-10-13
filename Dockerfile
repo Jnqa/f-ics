@@ -4,8 +4,8 @@ FROM fastlanetools/fastlane:latest
 # throw errors if Gemfile has been modified since Gemfile.lock
 #ADD requirements.txt .
 #RUN sudo apt-get update
-#RUN sudo apt install npm
-RUN gem install fastlane -NV
+RUN apt install npm
+# RUN gem install fastlane -NV
 RUN npm install @slack/client@3.16.0 --save
 #RUN npm install dirty --save
 #RUN npm install moment --save
