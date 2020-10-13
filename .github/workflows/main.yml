@@ -15,7 +15,7 @@
 
 name: F-ICS
 
-on: push
+#on: push
 #  #:    branches: master
 on: 
   push: 
