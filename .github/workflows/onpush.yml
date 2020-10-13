@@ -1,7 +1,13 @@
 # Action on push
 name: F-ICS
 
-on: push
+on: 
+  push:
+    branches:
+      - main
+    # idea 2
+    #  tags-ignore:
+    #  - '*'
 
 jobs:
   main:
