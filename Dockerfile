@@ -1,15 +1,21 @@
-FROM node:12.18-alpine
-ENV NODE_ENV production
-# Install npm requirements
-ADD requirements.txt .
-#RUN curl -sL https://git.io/vQhWq | ruby
-#RUN bash gem install fastlane || echo "problem"
-#RUN yarn install ruby
-RUN yarn add ruby
-#RUN yarn install -r requirements.txt
-WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN npm install --production --silent && mv node_modules ../
-COPY . .
+FROM ruby:2.5-slim
+
+LABEL Name=fics Version=0.0.1
+
 EXPOSE 3047
-CMD ["node", "poll-itc.js"]
+
+# throw errors if Gemfile has been modified since Gemfile.lock
+RUN bundle config --global frozen 1
+ADD requirements.txt .
+#RUN apt update
+#RUN apt install ruby -y
+#RUN apt install npm -y
+RUN bash -r requirements.txt
+
+WORKDIR /app
+COPY . /app
+
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+CMD ["ruby", "fics.rb"]

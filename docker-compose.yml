@@ -1,10 +1,8 @@
 version: '3.4'
 
 services:
-  itunesconnectslack:
-    image: itunesconnectslack
+  fics:
+    image: fics
     build: .
-    environment:
-      NODE_ENV: production
     ports:
       - 3047:3047
