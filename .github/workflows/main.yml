@@ -11,7 +11,7 @@
 #      uses: actions/checkout@v2
 #    - name: docker-magic
 #      run: docker build -t jnqa/f-ics .
-
+# 13.10.2020
 
 name: F-ICS
 
