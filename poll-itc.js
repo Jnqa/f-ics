@@ -4,6 +4,14 @@ var db = dirty('kvstore.db');
 var debug = false
 var pollIntervalSeconds = process.env.POLL_TIME
 
+var sesh = process.env.FASTLANE_SESSION
+if (sesh)
+{
+	var escapeDoubleQuotes = sesh.split('"').join('\\"')
+	var replaceStartingSingleQuotes = JSON.parse('"' + escapeDoubleQuotes + '"')
+	process.env.FASTLANE_SESSION = replaceStartingSingleQuotes
+}
+
 function checkAppStatus() {
 	console.log("Fetching latest app status...")
 
@@ -17,7 +25,7 @@ function checkAppStatus() {
 
 			for(let version of versions) {
   				_checkAppStatus(version);
-			}			
+			}
 		}
 		else {
 			console.log("There was a problem fetching the status of the app!");
