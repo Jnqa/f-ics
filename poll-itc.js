@@ -5,8 +5,7 @@ var debug = false
 var pollIntervalSeconds = process.env.POLL_TIME
 
 var sesh = process.env.FASTLANE_SESSION
-if (sesh)
-{
+if (sesh) {
 	var escapeDoubleQuotes = sesh.split('"').join('\\"')
 	var replaceStartingSingleQuotes = JSON.parse('"' + escapeDoubleQuotes + '"')
 	process.env.FASTLANE_SESSION = replaceStartingSingleQuotes
@@ -21,10 +20,25 @@ function checkAppStatus() {
 		if (stdout) {
 			// compare new app info with last one (from database)
 			console.log(stdout)
-			var versions = JSON.parse(stdout);
+			let versions;
+			try {
+				versions = JSON.parse(stdout);
+			} catch (e) { }
+			if (!versions) {
+				const array = stdout.split("\n").map(x => x.trim());
+				for (let item of array) {
+					try {
+						versions = JSON.parse(item);
+					} catch (e) {
 
-			for(let version of versions) {
-  				_checkAppStatus(version);
+					}
+				}
+			}
+			if (!versions)
+				return console.error(stdout);
+
+			for (let version of versions) {
+				_checkAppStatus(version);
 			}
 		}
 		else {
@@ -45,7 +59,7 @@ function _checkAppStatus(version) {
 	if (!lastAppInfo || lastAppInfo.status != currentAppInfo.status || debug) {
 		poster.slack(currentAppInfo, db.get(submissionStartkey));
 
-	    // store submission start time`
+		// store submission start time`
 		if (currentAppInfo.status == "Waiting For Review") {
 			db.set(submissionStartkey, new Date());
 		}
@@ -61,7 +75,7 @@ function _checkAppStatus(version) {
 	db.set(appInfoKey, currentAppInfo);
 }
 
-if(!pollIntervalSeconds) {
+if (!pollIntervalSeconds) {
 	pollIntervalSeconds = 60 * 2;
 }
 
