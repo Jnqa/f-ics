@@ -6,3 +6,5 @@ services:
     build: .
     ports:
       - 3047:3047
+    env_file:
+      - .env

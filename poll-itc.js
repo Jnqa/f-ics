@@ -51,6 +51,19 @@ function checkAppStatus() {
 function _checkAppStatus(version) {
 	// use the live version if edit version is unavailable
 	var currentAppInfo = version["editVersion"] ? version["editVersion"] : version["liveVersion"];
+	
+	currentAppInfo.status = humanizeStatus(currentAppInfo.status)
+	if (!currentAppInfo.iconUrl)
+	{
+		if (version["editVersion"] && version["editVersion"].iconUrl)
+			currentAppInfo.iconUrl = version["editVersion"].iconUrl
+		else if (version["liveVersion"] && version["liveVersion"].iconUrl)
+			currentAppInfo.iconUrl = version["liveVersion"].iconUrl
+	}
+	// console.log(`\n\n\n${currentAppInfo.name} icon url: ` + JSON.stringify(currentAppInfo.iconUrl) + "\n\n\n")
+	// return
+	if (currentAppInfo.iconUrl)
+		currentAppInfo.iconUrl = fillTemplate(currentAppInfo.iconUrl.templateUrl)
 
 	var appInfoKey = 'appInfo-' + currentAppInfo.appId;
 	var submissionStartkey = 'submissionStart' + currentAppInfo.appId;
@@ -73,6 +86,31 @@ function _checkAppStatus(version) {
 
 	// store latest app info in database
 	db.set(appInfoKey, currentAppInfo);
+}
+
+function fillTemplate(iconUrl) {
+	return iconUrl.replace('{w}', '90').replace('{h}', '90').replace('{f}', 'png')
+}
+
+function humanizeStatus(status) {
+	var statuses = {
+		PREPARE_FOR_SUBMISSION: "Prepare for Submission",
+		READY_FOR_SALE: "Ready for Sale",
+		REJECTED: "Rejected",
+		WAITING_FOR_REVIEW: "Waiting For Review",
+		IN_REVIEW: "In Review",
+		PENDING_CONTRACT: "Pending Contract",
+		WAITING_FOR_EXPORT_COMPLIANCE: "Waiting For Export Compliance",
+		PENDING_DEVELOPER_RELEASE: "Pending Developer Release",
+		PROCESSING_FOR_APP_STORE: "Processing for App Store",
+		PENDING_APPLE_RELEASE: "Pending Apple Release",
+		METADATA_REJECTED: "Metadata Rejected",
+		REMOVED_FROM_SALE: "Removed From Sale",
+		DEVELOPER_REJECTED: "Developer Rejected",
+		DEVELOPER_REMOVED_FROM_SALE: "Developer Removed From Sale",
+		INVALID_BINARY: "Invalid Binary",
+	}
+	return statuses[status]
 }
 
 if (!pollIntervalSeconds) {
